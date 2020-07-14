@@ -244,31 +244,31 @@ public class TwitterExample {
         System.out.println(manyMentions.writeAsText("alert.txt"));
 
 
-                          //Temporarily disabled Kafka for testing purposes uncomment the following to re-enable
-                          //Initialize a Kafka producer that will be consumed by D3.js and (possibly the database).
-                          //FlinkKafkaProducer010 myProducer = initKafkaProducer("localhost:9092","test");
-                          //dataWindowKafka.map(new JSONIZEString()).addSink(myProducer);
+        //Temporarily disabled Kafka for testing purposes uncomment the following to re-enable
+        //Initialize a Kafka producer that will be consumed by D3.js and (possibly the database).
+        FlinkKafkaProducer010 myProducer = initKafkaProducer("localhost:9092","flink-test");
+        dataWindowKafka.map(new JSONIZEString()).addSink(myProducer);
 
-                          //Transition to a table environment
+        //Transition to a table environment
 
-                          StreamTableEnvironment tableEnv = TableEnvironment.getTableEnvironment(env);
-                          // tableEnv.registerDataStream("myTable2", dataWindowKafka, "word, count");
-                          Table table2 = tableEnv.fromDataStream(dataWindowKafka, "word, count");
-                          // Confusing
-                          //System.out.println("This is the table name " + table2.where("count>5"));
-                          // Using a CSV TableSink
-                          //TableSink sink = new CsvTableSink("path54.csv", ",");
-                          //table2.writeToSink(sink);
-                          Properties kafkaProperties = new Properties();
+        StreamTableEnvironment tableEnv = TableEnvironment.getTableEnvironment(env);
+        // tableEnv.registerDataStream("myTable2", dataWindowKafka, "word, count");
+        Table table2 = tableEnv.fromDataStream(dataWindowKafka, "word, count");
+        // Confusing
+        //System.out.println("This is the table name " + table2.where("count>5"));
+        // Using a CSV TableSink
+        //TableSink sink = new CsvTableSink("path54.csv", ",");
+        //table2.writeToSink(sink);
+        Properties kafkaProperties = new Properties();
         kafkaProperties.setProperty("bootstrap.servers","localhost:9092");
-        kafkaProperties.setProperty("group.id", "test");
+        kafkaProperties.setProperty("group.id", "flink-twitter");
         kafkaProperties.setProperty("zookeeper.connect","localhost:2181");
-                          KafkaTableSink10 plotSink =  makeTableSink("twitter",kafkaProperties);
-                          //table2.writeToSink(plotSink);
+        KafkaTableSink10 plotSink =  makeTableSink("twitter", kafkaProperties);
+        table2.writeToSink(plotSink);
 
         env.execute("Twitter Streaming Example");
 
-                      }
+    }
 
 
                 // *************************************************************************
